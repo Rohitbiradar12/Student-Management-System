@@ -1,18 +1,14 @@
 package com.studentManagement.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.studentManagement.Entity.Student;
 import com.studentManagement.Repository.StudentRepository;
 import com.studentManagement.Service.StudentService;
-
 @Controller
 @RequestMapping("/students")
 public class StudentController {
@@ -42,18 +38,26 @@ public class StudentController {
         return "redirect:/students/all";
     }
 
-    @GetMapping("/students/edit/{id}")
-    public String editStudent(@PathVariable Long id,Model model){
-        model.addAttribute("students", studentService.findById(id));
+    @GetMapping("/edit/{id}")
+    public String editStudent(@PathVariable Long id, Model model){
+        model.addAttribute("student", studentService.findById(id));
         return "views/updateStudent";
     }
 
-    @PostMapping("students/{id}")
-    public String updateStudent(@PathVariable Long id,@ModelAttribute("student") Student student,Model model){
-        Student existingStudent = studentRepository.findById(id).get();
-        if(existingStudent!=null){
-            studentService.updateStudent(id, existingStudent);
-        }
+    @PostMapping("/{id}")
+    public String updateStudent(@PathVariable Long id, @ModelAttribute("student") Student student){
+        studentService.updateStudent(id, student);
         return "redirect:/students/all";
+    }
+
+    
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+        if (studentRepository.existsById(id)) {
+            studentService.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

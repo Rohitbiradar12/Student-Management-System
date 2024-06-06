@@ -41,7 +41,7 @@ public class StudentServiceImpl implements StudentService {
             student1.setId(student.getId());
             student1.setFirstName(student.getFirstName());
             student1.setLastName(student.getLastName());
-            student1.setPassword(student.getPassword());
+            // student1.setPassword(student.getPassword());
             student1.setEmail(student.getEmail());
             studentRepository.save(student1);
         
